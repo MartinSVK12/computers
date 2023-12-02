@@ -1,0 +1,7 @@
+tile.computers.computer.name=Computer
+tile.computers.diskDrive.name=Disk Drive
+item.computers.computerDisk.name=Floppy Disk
+
+tile.computers.computer.desc=You're using it right now!
+tile.computers.diskDrive.desc=Loads floppy disks.
+item.computers.computerDisk.desc=Relic of the past, stores your programs.

@@ -1,0 +1,6 @@
+Functions in the HTTP API:
+http.request( url )
+http.get( url )
+
+The HTTP API must be enabled in mod_ComputerCraft.cfg before being used.
+A period of time after a http.request() call is made, a "http_success" or "http_failure" event will be raised to os.pullEvent(). Arguments are the url and a file handle if successful. http.get() blocks until this event fires.

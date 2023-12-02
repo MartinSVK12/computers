@@ -1,0 +1,12 @@
+
+local tArgs = { ... }
+if #tArgs < 1 then
+  error( "Usage: cd <path>" )
+end
+
+local sNewDir = shell.resolve( tArgs[1] )
+if fs.isDir( sNewDir ) then
+  shell.setDir( sNewDir )
+else
+  error( "Not a directory" )
+end

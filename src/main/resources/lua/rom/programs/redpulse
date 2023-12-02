@@ -1,0 +1,16 @@
+
+local tArgs = { ... }
+local sSide = tArgs[1]
+if not sSide then
+  error("Usage: redpulse <side> <count> <period>")
+end
+
+local nCount = tonumber(tArgs[2]) or 1
+local nPeriod = tonumber(tArgs[3]) or 0.5
+
+for n=1,nCount do
+  redstone.setOutput( sSide, true )
+  sleep( nPeriod / 2 )
+  redstone.setOutput( sSide, false )
+  sleep( nPeriod / 2 )
+end

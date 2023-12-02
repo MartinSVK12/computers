@@ -1,0 +1,7 @@
+local tArgs = { ... }
+if #tArgs < 1 then
+	error( "Usage: sleep <duration>" )
+end
+
+local nSleep = tonumber( tArgs[1] ) or 0
+sleep( nSleep )

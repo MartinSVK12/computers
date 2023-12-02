@@ -1,0 +1,6 @@
+label gets or sets the label of Floppy Disks in attached disk drives.
+
+ex:
+"label get left" prints the label of the disk in the left drive.
+"label set left My Programs" sets the label of the disk in the left drive to "My Programs".
+"label clear left" clears the label.

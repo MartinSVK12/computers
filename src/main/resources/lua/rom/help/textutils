@@ -1,0 +1,4 @@
+Functions in the Text Utilities API:
+textutils.slowPrint( text )
+textutils.tabulate( table, table2, ... )
+textutils.formatTime( time, bTwentyFourHour )

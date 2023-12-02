@@ -1,0 +1,67 @@
+
+local function printUsage()
+	print( "Usages:" )
+	print( "label get <drive>" )
+	print( "label set <drive> <text>" )
+	print( "label clear <drive>" )
+end
+
+-- Get arguments
+local tArgs = { ... }
+if #tArgs == 0 then
+	printUsage()
+	return
+end
+
+local sDrive = nil
+local sCommand = nil
+if #tArgs == 1 then
+	sCommand = "get"
+	sDrive = tArgs[1]
+else
+	sCommand = tArgs[1]
+	sDrive = tArgs[2]
+end
+
+-- Check the disk exists
+local bData = disk.hasData( sDrive )
+if not bData then
+	error( "No disk in "..sDrive.." drive" )
+end
+
+-- Do commands
+if sCommand == "get" then
+	-- Get the label
+	local sLabel = disk.getLabel( sDrive )
+	if sLabel then
+		print( "Label is \""..sLabel.."\"" )
+	else
+		print( "No label" )
+	end
+	
+elseif sCommand == "set" or sCommand == "clear" then
+	-- Set the label
+	local sText = nil
+	if sCommand == "set" and #tArgs > 2 then
+		-- Build the label from input
+		sText = ""
+		for n=3,#tArgs do
+			sText = sText..tArgs[n].." "
+		end
+	end
+	disk.setLabel( sDrive, sText )
+	
+	-- Get the label
+	local sLabel = disk.getLabel( sDrive )
+	if sLabel then
+		print( "Label set to \""..sLabel.."\"" )
+	else
+		print( "Label cleared" )
+	end
+
+else
+	-- Unknown command
+	printUsage()
+	return
+	
+end

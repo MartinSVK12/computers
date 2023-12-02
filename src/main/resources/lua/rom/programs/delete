@@ -1,0 +1,8 @@
+
+local tArgs = { ... }
+if #tArgs < 1 then
+  error( "Usage: rm <path>" )
+end
+
+local sNewPath = shell.resolve( tArgs[1] )
+fs.delete( sNewPath )

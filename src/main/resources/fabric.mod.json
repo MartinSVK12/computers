@@ -1,0 +1,32 @@
+{
+	"schemaVersion": 1,
+	"id": "computers",
+	"version": "${version}",
+	"name": "Computers",
+	"description": "Computers in BTA!",
+	"icon": "icon.png",
+	"authors": [
+		"sunsetsatellite (bta port)",
+		"kleadron (cc legacy)",
+		"dan200 (original cc code)"
+	],
+	"contact": {
+		"homepage": "",
+		"sources": ""
+	},
+	"license": "CCPL 1.0.0",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"sunsetsatellite.computers.Computers"
+		]
+	},
+	"mixins": [
+		"computers.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.13.3"
+	},
+	"suggests": {
+	}
+}
