@@ -25,7 +25,9 @@
 		"computers.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.13.3"
+		"fabricloader": ">=0.13.3",
+		"halplibe": ">=2.8.0",
+		"sunsetutils": ">=1.9.1"
 	},
 	"suggests": {
 	}
