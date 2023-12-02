@@ -106,9 +106,9 @@ public class GuiComputer extends GuiScreen {
 			drawDefaultBackground();
 			int termWidth = 4 + tw * Computers.fixedWidthFontRenderer.FONT_WIDTH;
 			int termHeight = 4 + th * Computers.fixedWidthFontRenderer.FONT_HEIGHT;
-			int term = this.mc.renderEngine.getTexture("/gui/terminal.png");
-			int corners = this.mc.renderEngine.getTexture("/gui/corners.png");
-			int vfix = this.mc.renderEngine.getTexture("/gui/vertical_bar_fix.png");
+			int term = this.mc.renderEngine.getTexture("/assets/computers/gui/terminal.png");
+			int corners = this.mc.renderEngine.getTexture("/assets/computers/gui/corners.png");
+			int vfix = this.mc.renderEngine.getTexture("/assets/computers/gui/vertical_bar_fix.png");
 			GL11.glColor4f(1.0F, 1.0F, 1.0F, 1.0F);
 			int startX = (this.width - termWidth) / 2;
 			int startY = (this.height - termHeight) / 2;
