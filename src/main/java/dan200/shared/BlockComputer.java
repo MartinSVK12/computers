@@ -37,7 +37,7 @@ public class BlockComputer extends BlockTileEntityRotatable {
 
 	public BlockComputer(String id, int i) {
 		super(id, i, Material.stone);
-		setTickOnLoad(true);
+		setTicking(true);
 	}
 
 	public void onBlockAdded(World world, int i, int j, int k) {
@@ -155,11 +155,12 @@ public class BlockComputer extends BlockTileEntityRotatable {
 		return 1;
 	}
 
-	public void onBlockRemoval(World world, int i, int j, int k) {
+	@Override
+	public void onBlockRemoved(World world, int i, int j, int k, int data) {
 		TileEntityComputer computer = (TileEntityComputer) world.getBlockTileEntity(i, j, k);
 		if (computer != null)
 			computer.destroy();
-		super.onBlockRemoval(world, i, j, k);
+		super.onBlockRemoved(world, i, j, k, data);
 	}
 
 	@Override

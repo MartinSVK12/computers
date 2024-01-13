@@ -41,7 +41,7 @@ public class TileEntityComputer extends TileEntity implements IComputerCraftEnti
 		if (Computers.isMultiplayerClient()) {
 			PacketComputers packet = new PacketComputers();
 			packet.packetType = 5;
-			packet.dataInt = new int[]{this.xCoord, this.yCoord, this.zCoord};
+			packet.dataInt = new int[]{this.x, this.y, this.z};
 			Computers.sendToServer(packet);
 		}
 	}
@@ -66,13 +66,13 @@ public class TileEntityComputer extends TileEntity implements IComputerCraftEnti
 	/*
 // WARNING - Removed try catching itself - possible behaviour change.
 	 */
-	public void updateEntity() {
+	public void tick() {
 		double dt = 0.05;
 		if (!Computers.isMultiplayerClient()) {
 			PacketComputers packet;
 			this.m_computer.advance(dt);
 			if (this.m_computer.pollChanged()) {
-				Computers.notifyBlockChange(this.worldObj, this.xCoord, this.yCoord, this.zCoord, Computers.computer.id);
+				Computers.notifyBlockChange(this.worldObj, this.x, this.y, this.z, Computers.computer.id);
 				if (Computers.isMultiplayerServer()) {
 					packet = this.createOutputChangedPacket();
 					Computers.sendToAllPlayers(packet);
@@ -126,7 +126,7 @@ public class TileEntityComputer extends TileEntity implements IComputerCraftEnti
 		} else {
 			PacketComputers packet = new PacketComputers();
 			packet.packetType = 2;
-			packet.dataInt = new int[]{this.xCoord, this.yCoord, this.zCoord, key};
+			packet.dataInt = new int[]{this.x, this.y, this.z, key};
 			packet.dataString = new String[]{"" + ch};
 			Computers.sendToServer(packet);
 		}
@@ -138,7 +138,7 @@ public class TileEntityComputer extends TileEntity implements IComputerCraftEnti
 		} else {
 			PacketComputers packet = new PacketComputers();
 			packet.packetType = 6;
-			packet.dataInt = new int[]{this.xCoord, this.yCoord, this.zCoord};
+			packet.dataInt = new int[]{this.x, this.y, this.z};
 			Computers.sendToServer(packet);
 		}
 	}
@@ -149,7 +149,7 @@ public class TileEntityComputer extends TileEntity implements IComputerCraftEnti
 		} else {
 			PacketComputers packet = new PacketComputers();
 			packet.packetType = 9;
-			packet.dataInt = new int[]{this.xCoord, this.yCoord, this.zCoord};
+			packet.dataInt = new int[]{this.x, this.y, this.z};
 			Computers.sendToServer(packet);
 		}
 	}
@@ -160,7 +160,7 @@ public class TileEntityComputer extends TileEntity implements IComputerCraftEnti
 		} else {
 			PacketComputers packet = new PacketComputers();
 			packet.packetType = 12;
-			packet.dataInt = new int[]{this.xCoord, this.yCoord, this.zCoord};
+			packet.dataInt = new int[]{this.x, this.y, this.z};
 			Computers.sendToServer(packet);
 		}
 	}
@@ -233,13 +233,13 @@ public class TileEntityComputer extends TileEntity implements IComputerCraftEnti
 		if (Computers.isMultiplayerServer()) {
 			PacketComputers packet = new PacketComputers();
 			packet.packetType = 7;
-			packet.dataInt = new int[]{this.xCoord, this.yCoord, this.zCoord};
+			packet.dataInt = new int[]{this.x, this.y, this.z};
 			if (record != null) {
 				packet.dataString = new String[]{record};
 			}
 			Computers.sendToAllPlayers(packet);
 		} else {
-			this.worldObj.playRecord(record, this.xCoord, this.yCoord, this.zCoord);
+			this.worldObj.playRecord(record, this.x, this.y, this.z);
 		}
 	}
 
@@ -252,9 +252,9 @@ public class TileEntityComputer extends TileEntity implements IComputerCraftEnti
 
 	public void ejectDisk(int side) {
 		if (!Computers.isMultiplayerClient()) {
-			int i = this.xCoord;
-			int j = this.yCoord;
-			int k = this.zCoord;
+			int i = this.x;
+			int j = this.y;
+			int k = this.z;
 			int m = this.worldObj.getBlockMetadata(i, j, k);
 			this.tryEjectDisk(side, BlockComputer.getLocalSide(0, m), i, j + 1, k);
 			this.tryEjectDisk(side, BlockComputer.getLocalSide(1, m), i, j - 1, k);
@@ -281,7 +281,7 @@ public class TileEntityComputer extends TileEntity implements IComputerCraftEnti
 			}
 			PacketComputers packet = new PacketComputers();
 			packet.packetType = 3;
-			packet.dataInt = new int[]{this.xCoord, this.yCoord, this.zCoord, this.m_terminal.getCursorX(), this.m_terminal.getCursorY(), lineChangeMask};
+			packet.dataInt = new int[]{this.x, this.y, this.z, this.m_terminal.getCursorX(), this.m_terminal.getCursorY(), lineChangeMask};
 			packet.dataString = new String[lineChangeCount];
 			int n = 0;
 			for (int y = 0; y < this.m_terminal.getHeight(); ++y) {
@@ -306,7 +306,7 @@ public class TileEntityComputer extends TileEntity implements IComputerCraftEnti
 			if (!this.m_computer.getOutput(i)) continue;
 			flags += 1 << i + 2;
 		}
-		packet.dataInt = new int[]{this.xCoord, this.yCoord, this.zCoord, flags, this.m_computer.getBundledOutput(0), this.m_computer.getBundledOutput(1), this.m_computer.getBundledOutput(2), this.m_computer.getBundledOutput(3), this.m_computer.getBundledOutput(3), this.m_computer.getBundledOutput(5)};
+		packet.dataInt = new int[]{this.x, this.y, this.z, flags, this.m_computer.getBundledOutput(0), this.m_computer.getBundledOutput(1), this.m_computer.getBundledOutput(2), this.m_computer.getBundledOutput(3), this.m_computer.getBundledOutput(3), this.m_computer.getBundledOutput(5)};
 		return packet;
 	}
 
@@ -375,7 +375,7 @@ public class TileEntityComputer extends TileEntity implements IComputerCraftEnti
 						this.m_clientData.output[i] = (flags & 1 << i + 2) > 0;
 						this.m_clientData.bundledOutput[i] = packet.dataInt[4 + i];
 					}
-					Computers.notifyBlockChange(this.worldObj, this.xCoord, this.yCoord, this.zCoord, Computers.computer.id);
+					Computers.notifyBlockChange(this.worldObj, this.x, this.y, this.z, Computers.computer.id);
 					break;
 				}
 				case 7: {

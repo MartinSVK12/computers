@@ -19,6 +19,9 @@
 	"entrypoints": {
 		"main": [
 			"sunsetsatellite.computers.Computers"
+		],
+		"recipesReady": [
+			"sunsetsatellite.computers.Computers"
 		]
 	},
 	"mixins": [
@@ -26,8 +29,8 @@
 	],
 	"depends": {
 		"fabricloader": ">=0.13.3",
-		"halplibe": ">=2.8.0",
-		"sunsetutils": ">=1.9.1"
+		"halplibe": ">=3.1.2",
+		"catalyst-core": ">=1.1.1"
 	},
 	"suggests": {
 	}

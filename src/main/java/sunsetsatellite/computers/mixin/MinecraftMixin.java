@@ -8,7 +8,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import sunsetsatellite.computers.Computers;
 
 @Mixin(value = Minecraft.class, remap = false)
@@ -32,13 +31,4 @@ public abstract class MinecraftMixin {
 		ItemDisk.loadLabelsIfWorldChanged(theWorld);
 		Computers.m_tickCount++;
 	}
-
-	@Shadow
-	private static Minecraft theMinecraft;
-
-	@Inject(method = "getMinecraft(Ljava/lang/Class;)Lnet/minecraft/client/Minecraft;", at = @At("HEAD"), cancellable = true)
-	private static void returnMinecraft(Class<?> caller, CallbackInfoReturnable<Minecraft> cir){
-		cir.setReturnValue(theMinecraft);
-	}
-
 }

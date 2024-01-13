@@ -1,0 +1,100 @@
+[
+  {
+    "name": "computers:workbench/computer",
+    "type": "minecraft:crafting/shaped",
+    "pattern": [
+      "XXX",
+      "XYX",
+      "XZX"
+    ],
+    "symbols": [
+      {
+        "symbol": "X",
+        "group": "minecraft:stones"
+      },
+      {
+        "symbol": "Y",
+        "stack": {
+          "key": "item.dust.redstone",
+          "amount": 1,
+          "meta": 0
+        }
+      },
+      {
+        "symbol": "Z",
+        "stack": {
+          "key": "tile.glass",
+          "amount": 1,
+          "meta": 0
+        }
+      }
+    ],
+    "result": {
+      "key": "tile.computers.computer",
+      "amount": 1,
+      "meta": 0
+    },
+    "consumeContainers": false
+  },
+  {
+    "name": "computers:workbench/disk_drive",
+    "type": "minecraft:crafting/shaped",
+    "pattern": [
+      "XXX",
+      "XYX",
+      "XYX"
+    ],
+    "symbols": [
+      {
+        "symbol": "X",
+        "group": "minecraft:stones"
+      },
+      {
+        "symbol": "Y",
+        "stack": {
+          "key": "item.dust.redstone",
+          "amount": 1,
+          "meta": 0
+        }
+      }
+    ],
+    "result": {
+      "key": "tile.computers.diskDrive",
+      "amount": 1,
+      "meta": 0
+    },
+    "consumeContainers": false
+  },
+  {
+    "name": "computers:workbench/disk",
+    "type": "minecraft:crafting/shaped",
+    "pattern": [
+      "X",
+      "Y"
+    ],
+    "symbols": [
+      {
+        "symbol": "X",
+        "stack": {
+          "key": "item.paper",
+          "amount": 1,
+          "meta": 0
+        }
+      },
+      {
+        "symbol": "Y",
+        "stack": {
+          "key": "item.dust.redstone",
+          "amount": 1,
+          "meta": 0
+        }
+      }
+    ],
+    "result": {
+      "key": "item.computers.computerDisk",
+      "amount": 1,
+      "meta": 0
+    },
+    "consumeContainers": false
+  }
+]

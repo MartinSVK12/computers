@@ -10,7 +10,12 @@ import net.minecraft.client.entity.player.EntityPlayerSP;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.block.tag.BlockTags;
-import net.minecraft.core.crafting.CraftingManager;
+import net.minecraft.core.data.DataLoader;
+import net.minecraft.core.data.registry.Registries;
+import net.minecraft.core.data.registry.recipe.RecipeGroup;
+import net.minecraft.core.data.registry.recipe.RecipeNamespace;
+import net.minecraft.core.data.registry.recipe.RecipeSymbol;
+import net.minecraft.core.data.registry.recipe.entry.RecipeEntryCrafting;
 import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
@@ -22,6 +27,7 @@ import sunsetsatellite.computers.packets.PacketComputers;
 import turniplabs.halplibe.helper.BlockBuilder;
 import turniplabs.halplibe.helper.EntityHelper;
 import turniplabs.halplibe.helper.ItemHelper;
+import turniplabs.halplibe.util.RecipeEntrypoint;
 import turniplabs.halplibe.util.TomlConfigHandler;
 import turniplabs.halplibe.util.toml.Toml;
 
@@ -32,12 +38,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-public class Computers implements ModInitializer {
+public class Computers implements ModInitializer, RecipeEntrypoint {
 	public static final String MOD_ID = "computers";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final TomlConfigHandler config;
 	private static int availableBlockId = 1300;
 	private static int availableItemId = 17300;
+
+	public static final RecipeNamespace COMPUTERS = new RecipeNamespace();
+	public static final RecipeGroup<RecipeEntryCrafting<?,?>> WORKBENCH = new RecipeGroup<>(new RecipeSymbol(new ItemStack(Block.workbench)));
 
 	static {
 		Toml configToml = new Toml("Computers configuration file.");
@@ -112,13 +121,8 @@ public class Computers implements ModInitializer {
 		ItemToolPickaxe.miningLevels.put(computer,1);
 		ItemToolPickaxe.miningLevels.put(diskDrive,1);
 
-		CraftingManager.getInstance().addRecipe(new ItemStack(computer, 1), "XXX", "XYX", "XZX", 'X', Block.stone, 'Y', Item.dustRedstone, 'Z', Block.glass);
-		CraftingManager.getInstance().addRecipe(new ItemStack(diskDrive, 1), "XXX", "XYX", "XYX", 'X', Block.stone, 'Y', Item.dustRedstone);
-		CraftingManager.getInstance().addRecipe(new ItemStack(disk, 1), "X", "Y", 'X', Item.dustRedstone, 'Y', Item.paper);
-
-
-		EntityHelper.createTileEntity(TileEntityComputer.class,"Computer");
-		EntityHelper.createTileEntity(TileEntityDiskDrive.class,"Disk Drive");
+		EntityHelper.Core.createTileEntity(TileEntityComputer.class,"Computer");
+		EntityHelper.Core.createTileEntity(TileEntityDiskDrive.class,"Disk Drive");
 	}
 
 	public static boolean isMultiplayerClient() {
@@ -191,5 +195,12 @@ public class Computers implements ModInitializer {
 
 	public static boolean getCursorBlink() {
 		return (m_tickCount / 6 % 2 == 0);
+	}
+
+	@Override
+	public void onRecipesReady() {
+		COMPUTERS.register("workbench",WORKBENCH);
+		Registries.RECIPES.register("computers",COMPUTERS);
+		DataLoader.loadRecipes("/assets/computers/workbench.json");
 	}
 }

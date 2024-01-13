@@ -11,9 +11,9 @@ import net.minecraft.core.entity.player.EntityPlayer;
 import net.minecraft.core.item.Item;
 import net.minecraft.core.item.ItemStack;
 import net.minecraft.core.world.World;
+import sunsetsatellite.catalyst.core.util.ICustomDescription;
 import sunsetsatellite.computers.Computers;
 import sunsetsatellite.computers.packets.PacketComputers;
-import sunsetsatellite.sunsetutils.util.ICustomDescription;
 
 import java.io.*;
 import java.lang.ref.WeakReference;
@@ -84,7 +84,7 @@ public class ItemDisk
 
 											 @Override
 											 public void execute() {
-												 ItemDisk.loadLabels((World) labelWorld.get());
+												 //ItemDisk.loadLabels((World) labelWorld.get());
 											 }
 										 }, null
 				);

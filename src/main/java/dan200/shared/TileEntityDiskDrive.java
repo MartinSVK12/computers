@@ -33,7 +33,7 @@ public class TileEntityDiskDrive
 		if (Computers.isMultiplayerClient()) {
 			PacketComputers packet = new PacketComputers();
 			packet.packetType = 5;
-			packet.dataInt = new int[]{this.xCoord, this.yCoord, this.zCoord};
+			packet.dataInt = new int[]{this.x, this.y, this.z};
 			Computers.sendToServer(packet);
 		}
 	}
@@ -64,7 +64,7 @@ public class TileEntityDiskDrive
 		boolean hadDisk = this.hasDisk();
 		this.diskStack = itemstack;
 		if (!Computers.isMultiplayerClient()) {
-			Computers.notifyBlockChange(this.worldObj, this.xCoord, this.yCoord, this.zCoord, Computers.diskDrive.id);
+			Computers.notifyBlockChange(this.worldObj, this.x, this.y, this.z, Computers.diskDrive.id);
 			if (Computers.isMultiplayerServer()) {
 				int newDiskLight = 0;
 				if (this.hasAnything()) {
@@ -109,10 +109,15 @@ public class TileEntityDiskDrive
 
 	@Override
 	public boolean canInteractWith(EntityPlayer entityplayer) {
-		if (this.worldObj.getBlockTileEntity(this.xCoord, this.yCoord, this.zCoord) != this) {
+		if (this.worldObj.getBlockTileEntity(this.x, this.y, this.z) != this) {
 			return false;
 		}
-		return entityplayer.distanceTo((double) this.xCoord + 0.5, (double) this.yCoord + 0.5, (double) this.zCoord + 0.5) <= 64.0;
+		return entityplayer.distanceTo((double) this.x + 0.5, (double) this.y + 0.5, (double) this.z + 0.5) <= 64.0;
+	}
+
+	@Override
+	public void sortInventory() {
+
 	}
 
 	public boolean hasAnything() {
@@ -139,7 +144,7 @@ public class TileEntityDiskDrive
 			int xOff = 0;
 			int zOff = 0;
 			if (!destroyed) {
-				int metaData = this.worldObj.getBlockMetadata(this.xCoord, this.yCoord, this.zCoord);
+				int metaData = this.worldObj.getBlockMetadata(this.x, this.y, this.z);
 				switch (metaData) {
 					case 2: {
 						zOff = -1;
@@ -159,16 +164,16 @@ public class TileEntityDiskDrive
 					}
 				}
 			}
-			double x = (double) this.xCoord + 0.5 + (double) xOff * 0.5;
-			double y = (double) this.yCoord + 0.75;
-			double z = (double) this.zCoord + 0.5 + (double) zOff * 0.5;
+			double x = (double) this.x + 0.5 + (double) xOff * 0.5;
+			double y = (double) this.y + 0.75;
+			double z = (double) this.z + 0.5 + (double) zOff * 0.5;
 			EntityItem entityitem = new EntityItem(this.worldObj, x, y, z, disks);
 			entityitem.xd = (double) xOff * 0.15;
 			entityitem.yd = 0.0;
 			entityitem.zd = (double) zOff * 0.15;
 			this.worldObj.entityJoinedWorld(entityitem);
 			if (!destroyed) {
-				this.worldObj.playSoundEffect(1000, this.xCoord, this.yCoord, this.zCoord, 0);
+				this.worldObj.playSoundEffect(1000, this.x, this.y, this.z, 0);
 			}
 		}
 	}
@@ -189,14 +194,14 @@ public class TileEntityDiskDrive
 		return null;
 	}
 
-	public void updateEntity() {
+	public void tick() {
 		if (this.m_firstFrame) {
 			if (!Computers.isMultiplayerClient()) {
 				this.m_clientDiskLight = 0;
 				if (this.hasAnything()) {
 					this.m_clientDiskLight = this.hasDisk() ? 1 : 2;
 				}
-				Computers.notifyBlockChange(this.worldObj, this.xCoord, this.yCoord, this.zCoord, Computers.diskDrive.id);
+				Computers.notifyBlockChange(this.worldObj, this.x, this.y, this.z, Computers.diskDrive.id);
 			}
 			this.m_firstFrame = false;
 		}
@@ -205,7 +210,7 @@ public class TileEntityDiskDrive
 	private PacketComputers createDiskLightPacket() {
 		PacketComputers packet = new PacketComputers();
 		packet.packetType = 8;
-		packet.dataInt = new int[]{this.xCoord, this.yCoord, this.zCoord, this.m_clientDiskLight};
+		packet.dataInt = new int[]{this.x, this.y, this.z, this.m_clientDiskLight};
 		return packet;
 	}
 
@@ -229,7 +234,7 @@ public class TileEntityDiskDrive
 			switch (packet.packetType) {
 				case 8: {
 					this.m_clientDiskLight = packet.dataInt[3];
-					Computers.notifyBlockChange(this.worldObj, this.xCoord, this.yCoord, this.zCoord, Computers.diskDrive.id);
+					Computers.notifyBlockChange(this.worldObj, this.x, this.y, this.z, Computers.diskDrive.id);
 					break;
 				}
 			}

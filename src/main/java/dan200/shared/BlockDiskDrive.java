@@ -33,12 +33,13 @@ public class BlockDiskDrive
 		super(id, i, Material.stone);
 	}
 
-	public void onBlockRemoval(World world, int i, int j, int k) {
+	@Override
+	public void onBlockRemoved(World world, int i, int j, int k, int data) {
 		TileEntityDiskDrive drive = (TileEntityDiskDrive) world.getBlockTileEntity(i, j, k);
 		if (drive != null) {
 			drive.ejectContents(true);
 		}
-		super.onBlockRemoval(world, i, j, k);
+		super.onBlockRemoved(world, i, j, k, data);
 	}
 
 	@Override

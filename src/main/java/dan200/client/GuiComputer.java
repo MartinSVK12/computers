@@ -28,24 +28,25 @@ public class GuiComputer extends GuiScreen {
 		this.m_rebootTimer = 0.0F;
 	}
 
-	public void initGui() {
-		super.initGui();
+	public void init() {
+		super.init();
 		Keyboard.enableRepeatEvents(true);
 		this.m_terminateTimer = 0.0F;
 		this.m_rebootTimer = 0.0F;
 	}
 
-	public void onGuiClosed() {
-		super.onGuiClosed();
+	public void onClosed() {
+		super.onClosed();
 		Keyboard.enableRepeatEvents(false);
 	}
 
-	public boolean doesGuiPauseGame() {
+	@Override
+	public boolean pausesGame() {
 		return false;
 	}
 
-	public void updateScreen() {
-		super.updateScreen();
+	public void tick() {
+		super.tick();
 		if (this.m_computer.isDestroyed()) {
 			this.mc.displayGuiScreen(null);
 			return;

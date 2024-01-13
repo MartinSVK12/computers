@@ -85,16 +85,15 @@ dependencies {
 	// If you do not need Halplibe you can comment this line out or delete this line
 	modImplementation "bta-halplibe:halplibe:${project.halplibe_version}"
 
-	modImplementation "ModMenu:ModMenu:2.0.0"
+	modImplementation "ModMenu:ModMenu:2.0.3"
 
-	modImplementation "sunsetutils:sunsetutils:1.9.1"
-	modImplementation "guidebookpp:guidebookpp:1.5.7"
+	modImplementation "catalyst:catalyst-core:1.1.1"
 
 	implementation "org.slf4j:slf4j-api:1.8.0-beta4"
 	implementation "org.apache.logging.log4j:log4j-slf4j18-impl:2.16.0"
 
-	implementation 'com.google.guava:guava:30.0-jre'
-	implementation group: 'com.google.code.gson', name: 'gson', version: '2.8.9'
+	implementation 'com.google.guava:guava:33.0.0-jre'
+	implementation group: 'com.google.code.gson', name: 'gson', version: '2.10.1'
 
 	implementation("org.apache.commons:commons-lang3:3.12.0")
 
