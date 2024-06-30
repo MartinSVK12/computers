@@ -28,9 +28,8 @@ public class ItemDisk
 	private static Map serverLabelRequests = new HashMap();
 	private static boolean labelsChanged = false;
 
-	public ItemDisk(int i) {
-		super(i);
-		this.setMaxStackSize(1);
+	public ItemDisk(String name, int id) {
+		super(name, id);
 	}
 
 	private static int getNewDiskID(World world) {

@@ -7,6 +7,10 @@ import dan200.shared.*;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.EntityPlayerSP;
+import net.minecraft.client.render.block.model.BlockModelHorizontalRotation;
+import net.minecraft.client.render.block.model.BlockModelRotatable;
+import net.minecraft.client.render.stitcher.AtlasStitcher;
+import net.minecraft.client.render.stitcher.TextureRegistry;
 import net.minecraft.core.block.Block;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.block.tag.BlockTags;
@@ -24,29 +28,34 @@ import net.minecraft.core.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sunsetsatellite.computers.packets.PacketComputers;
-import turniplabs.halplibe.helper.BlockBuilder;
-import turniplabs.halplibe.helper.EntityHelper;
-import turniplabs.halplibe.helper.ItemHelper;
+import turniplabs.halplibe.helper.*;
+import turniplabs.halplibe.util.ClientStartEntrypoint;
+import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
 import turniplabs.halplibe.util.TomlConfigHandler;
 import turniplabs.halplibe.util.toml.Toml;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.reflect.Field;
-import java.util.Arrays;
-import java.util.List;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.*;
+import java.nio.file.FileSystem;
+import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
-public class Computers implements ModInitializer, RecipeEntrypoint {
+public class Computers implements ModInitializer, RecipeEntrypoint, ClientStartEntrypoint {
 	public static final String MOD_ID = "computers";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final TomlConfigHandler config;
 	private static int availableBlockId = 1300;
 	private static int availableItemId = 17300;
 
-	public static final RecipeNamespace COMPUTERS = new RecipeNamespace();
-	public static final RecipeGroup<RecipeEntryCrafting<?,?>> WORKBENCH = new RecipeGroup<>(new RecipeSymbol(new ItemStack(Block.workbench)));
+	public static RecipeNamespace COMPUTERS;
+	public static RecipeGroup<RecipeEntryCrafting<?,?>> WORKBENCH;
 
 	static {
 		Toml configToml = new Toml("Computers configuration file.");
@@ -87,20 +96,22 @@ public class Computers implements ModInitializer, RecipeEntrypoint {
 	public static String luaFolder = "/mods/computers/lua";
 
 	public static final BlockComputer computer = (BlockComputer) new BlockBuilder(MOD_ID)
-		.setSideTextures("computer/1.png")
-		.setNorthTexture("computer/2.png")
-		.setTopBottomTexture("computer/3.png")
+		.setSideTextures("computers:block/1_computer")
+		.setNorthTexture("computers:block/2_computer")
+		.setTopBottomTextures("computers:block/3_computer")
 		.setHardness(2)
 		.setResistance(2)
+		.setBlockModel(BlockModelHorizontalRotation::new)
 		.build(new BlockComputer("computer",config.getInt("BlockIDs.computer")).withTags(BlockTags.MINEABLE_BY_PICKAXE));
 	public static final BlockDiskDrive diskDrive = (BlockDiskDrive) new BlockBuilder(MOD_ID)
-		.setSideTextures("diskdrive/1.png")
-		.setNorthTexture("diskdrive/0.png")
-		.setTopBottomTexture("diskdrive/3.png")
+		.setSideTextures("computers:block/1_diskdrive")
+		.setNorthTexture("computers:block/0_diskdrive")
+		.setTopBottomTextures("computers:block/3_diskdrive")
 		.setHardness(2)
 		.setResistance(2)
+		.setBlockModel(BlockModelHorizontalRotation::new)
 		.build(new BlockDiskDrive("diskDrive",config.getInt("BlockIDs.diskDrive")).withTags(BlockTags.MINEABLE_BY_PICKAXE));
-	public static final ItemDisk disk = (ItemDisk) ItemHelper.createItem(MOD_ID,new ItemDisk(config.getInt("ItemIDs.disk")),"computerDisk","floppy.png");
+	public static final ItemDisk disk = new ItemBuilder(MOD_ID).setIcon("computers:item/floppy").build(new ItemDisk("computerDisk",config.getInt("ItemIDs.disk")));
 
 	public static int m_tickCount;
 
@@ -121,8 +132,8 @@ public class Computers implements ModInitializer, RecipeEntrypoint {
 		ItemToolPickaxe.miningLevels.put(computer,1);
 		ItemToolPickaxe.miningLevels.put(diskDrive,1);
 
-		EntityHelper.Core.createTileEntity(TileEntityComputer.class,"Computer");
-		EntityHelper.Core.createTileEntity(TileEntityDiskDrive.class,"Disk Drive");
+		EntityHelper.createTileEntity(TileEntityComputer.class,"Computer");
+		EntityHelper.createTileEntity(TileEntityDiskDrive.class,"Disk Drive");
 	}
 
 	public static boolean isMultiplayerClient() {
@@ -199,8 +210,104 @@ public class Computers implements ModInitializer, RecipeEntrypoint {
 
 	@Override
 	public void onRecipesReady() {
+		RecipeBuilder.Shaped(MOD_ID,"XXX","XYX","XZX")
+			.addInput('X',"minecraft:stones")
+			.addInput('Y',Item.dustRedstone)
+			.addInput('Z',Block.glass)
+			.create("computer",computer.getDefaultStack());
+		RecipeBuilder.Shaped(MOD_ID,"XXX","XYX","XYX")
+			.addInput('X',"minecraft:stones")
+			.addInput('Y',Item.dustRedstone)
+			.create("computer",diskDrive.getDefaultStack());
+		RecipeBuilder.Shaped(MOD_ID,"XXX","XYX","XYX")
+			.addInput('X',Item.paper)
+			.addInput('Y',Item.dustRedstone)
+			.create("computer",disk.getDefaultStack());
+	}
+
+	@Override
+	public void initNamespaces() {
+		COMPUTERS = new RecipeNamespace();
+		WORKBENCH = new RecipeGroup<>(new RecipeSymbol(new ItemStack(Block.workbench)));
 		COMPUTERS.register("workbench",WORKBENCH);
 		Registries.RECIPES.register("computers",COMPUTERS);
-		DataLoader.loadRecipes("/assets/computers/workbench.json");
+	}
+
+	//thanks kill05 ;) (and also why do i have to use this again?)
+	public void loadTextures(AtlasStitcher stitcher){
+		// This is awful, but required until 7.2-pre2 comes ou-- nuh uh, pre2 is here and this is still needed :abyss:
+		String id = TextureRegistry.stitcherMap.entrySet().stream().filter((e)->e.getValue() == stitcher).map(Map.Entry::getKey).collect(Collectors.toSet()).stream().findFirst().orElse(null);
+		if(id == null){
+			throw new RuntimeException("Failed to load textures: invalid atlas provided!");
+		}
+		LOGGER.info("Loading "+id+" textures...");
+		long start = System.currentTimeMillis();
+
+		String path = String.format("%s/%s/%s", "/assets", MOD_ID, stitcher.directoryPath);
+		URI uri;
+		try {
+			uri = DataLoader.class.getResource(path).toURI();
+		} catch (URISyntaxException e) {
+			throw new RuntimeException(e);
+		}
+		FileSystem fileSystem = null;
+		Path myPath;
+		if (uri.getScheme().equals("jar")) {
+			try {
+				fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap());
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+			myPath = fileSystem.getPath(path);
+		} else {
+			myPath = Paths.get(uri);
+		}
+
+		Stream<Path> walk;
+		try {
+			walk = Files.walk(myPath, Integer.MAX_VALUE);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+		Iterator<Path> it = walk.iterator();
+
+		while (it.hasNext()) {
+			Path file = it.next();
+			String name = file.getFileName().toString();
+			if (name.endsWith(".png")) {
+				String path1 = file.toString().replace(file.getFileSystem().getSeparator(), "/");
+				String cutPath = path1.split(path)[1];
+				cutPath = cutPath.substring(0, cutPath.length() - 4);
+				TextureRegistry.getTexture(MOD_ID + ":"+ id + cutPath);
+			}
+		}
+
+		walk.close();
+		if (fileSystem != null) {
+			try {
+				fileSystem.close();
+			} catch (IOException e) {
+				throw new RuntimeException(e);
+			}
+		}
+
+		try {
+			TextureRegistry.initializeAllFiles(MOD_ID, stitcher);
+		} catch (URISyntaxException | IOException e) {
+			throw new RuntimeException("Failed to load textures.", e);
+		}
+		LOGGER.info(String.format("Loaded "+id+" textures (took %sms).", System.currentTimeMillis() - start));
+	}
+
+	@Override
+	public void beforeClientStart() {
+
+	}
+
+	@Override
+	public void afterClientStart() {
+		loadTextures(TextureRegistry.blockAtlas);
+		loadTextures(TextureRegistry.itemAtlas);
+		Minecraft.getMinecraft(Minecraft.class).renderEngine.refreshTextures(new ArrayList<>());
 	}
 }

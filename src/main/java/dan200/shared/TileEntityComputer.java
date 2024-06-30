@@ -239,7 +239,7 @@ public class TileEntityComputer extends TileEntity implements IComputerCraftEnti
 			}
 			Computers.sendToAllPlayers(packet);
 		} else {
-			this.worldObj.playRecord(record, this.x, this.y, this.z);
+			this.worldObj.playRecord(record, "unknown", this.x, this.y, this.z);
 		}
 	}
 

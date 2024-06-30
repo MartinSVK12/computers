@@ -12,18 +12,18 @@ import net.minecraft.core.block.BlockTileEntityRotatable;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.block.material.Material;
 import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.world.World;
 import net.minecraft.core.world.WorldSource;
 import sunsetsatellite.computers.Computers;
 import sunsetsatellite.computers.packets.PacketComputers;
-import turniplabs.halplibe.helper.TextureHelper;
 
 import java.util.Random;
 
 public class BlockComputer extends BlockTileEntityRotatable {
 	private Random random = new Random();
 
-	public int[] blockTextures = new int[]{
+	/*public int[] blockTextures = new int[]{
 		Block.texCoordToIndex(TextureHelper.getOrCreateBlockTexture(Computers.MOD_ID,"computer/0.png")[0]
 			,TextureHelper.getOrCreateBlockTexture(Computers.MOD_ID,"computer/0.png")[1]),
 		Block.texCoordToIndex(TextureHelper.getOrCreateBlockTexture(Computers.MOD_ID,"computer/1.png")[0]
@@ -32,8 +32,8 @@ public class BlockComputer extends BlockTileEntityRotatable {
 			,TextureHelper.getOrCreateBlockTexture(Computers.MOD_ID,"computer/2.png")[1]),
 		Block.texCoordToIndex(TextureHelper.getOrCreateBlockTexture(Computers.MOD_ID,"computer/3.png")[0]
 			,TextureHelper.getOrCreateBlockTexture(Computers.MOD_ID,"computer/3.png")[1]),
-	};
-	public int blinkTexture = 0;
+	};*/
+	//public int blinkTexture = 0;
 
 	public BlockComputer(String id, int i) {
 		super(id, i, Material.stone);
@@ -104,19 +104,20 @@ public class BlockComputer extends BlockTileEntityRotatable {
 		return this.blockTextures[1];
 	}*/
 
-	public boolean blockActivated(World world, int x, int y, int z, EntityPlayer entityplayer) {
+	@Override
+	public boolean onBlockRightClicked(World world, int x, int y, int z, EntityPlayer player, Side side, double xHit, double yHit) {
 		if (Computers.isMultiplayerClient()) {
 			return true;
 		}
-		if (!entityplayer.isSneaking()) {
+		if (!player.isSneaking()) {
 			TileEntityComputer computer = (TileEntityComputer) world.getBlockTileEntity(x, y, z);
 			if (computer != null) {
 				PacketComputers packet = new PacketComputers();
 				packet.packetType = 1;
 				packet.dataInt = new int[]{x, y, z};
-				Computers.sendToPlayer(entityplayer, packet);
+				Computers.sendToPlayer(player, packet);
 				computer.setSwitchedOn(true);
-				computer.updateClient(entityplayer);
+				computer.updateClient(player);
 			}
 			return true;
 		}

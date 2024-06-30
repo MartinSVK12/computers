@@ -9,7 +9,7 @@ package dan200.client;
 import net.minecraft.client.GLAllocation;
 import net.minecraft.client.option.GameSettings;
 import net.minecraft.client.render.RenderEngine;
-import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.tessellator.Tessellator;
 import net.minecraft.core.util.helper.ChatAllowedCharacters;
 import org.lwjgl.opengl.GL11;
 

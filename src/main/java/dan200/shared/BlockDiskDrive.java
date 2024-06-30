@@ -12,13 +12,13 @@ import net.minecraft.core.block.BlockTileEntityRotatable;
 import net.minecraft.core.block.entity.TileEntity;
 import net.minecraft.core.block.material.Material;
 import net.minecraft.core.entity.player.EntityPlayer;
+import net.minecraft.core.util.helper.Side;
 import net.minecraft.core.world.World;
 import sunsetsatellite.computers.Computers;
-import turniplabs.halplibe.helper.TextureHelper;
 
 public class BlockDiskDrive
 	extends BlockTileEntityRotatable {
-	public int[] blockTextures = new int[]{
+	/*public int[] blockTextures = new int[]{
 		Block.texCoordToIndex(TextureHelper.getOrCreateBlockTexture(Computers.MOD_ID,"diskdrive/0.png")[0]
 			,TextureHelper.getOrCreateBlockTexture(Computers.MOD_ID,"diskdrive/0.png")[1]),
 		Block.texCoordToIndex(TextureHelper.getOrCreateBlockTexture(Computers.MOD_ID,"diskdrive/1.png")[0]
@@ -27,7 +27,7 @@ public class BlockDiskDrive
 			,TextureHelper.getOrCreateBlockTexture(Computers.MOD_ID,"diskdrive/2.png")[1]),
 		Block.texCoordToIndex(TextureHelper.getOrCreateBlockTexture(Computers.MOD_ID,"diskdrive/3.png")[0]
 			,TextureHelper.getOrCreateBlockTexture(Computers.MOD_ID,"diskdrive/3.png")[1]),
-	};
+	};*/
 
 	public BlockDiskDrive(String id, int i) {
 		super(id, i, Material.stone);
@@ -75,14 +75,15 @@ public class BlockDiskDrive
 		return this.blockTextures[1];
 	}*/
 
-	public boolean blockActivated(World world, int i, int j, int k, EntityPlayer entityplayer) {
+	@Override
+	public boolean onBlockRightClicked(World world, int x, int y, int z, EntityPlayer player, Side side, double xHit, double yHit) {
 		if (Computers.isMultiplayerClient()) {
 			return true;
 		}
-		if (!entityplayer.isSneaking()) {
-			TileEntityDiskDrive drive = (TileEntityDiskDrive) world.getBlockTileEntity(i, j, k);
+		if (!player.isSneaking()) {
+			TileEntityDiskDrive drive = (TileEntityDiskDrive) world.getBlockTileEntity(x, y, z);
 			if (drive != null) {
-				Computers.openDiskDriveGUI(entityplayer, drive);
+				Computers.openDiskDriveGUI(player, drive);
 			}
 			return true;
 		}
