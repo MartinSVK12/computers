@@ -8,7 +8,6 @@ import net.fabricmc.api.ModInitializer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.entity.player.EntityPlayerSP;
 import net.minecraft.client.render.block.model.BlockModelHorizontalRotation;
-import net.minecraft.client.render.block.model.BlockModelRotatable;
 import net.minecraft.client.render.stitcher.AtlasStitcher;
 import net.minecraft.client.render.stitcher.TextureRegistry;
 import net.minecraft.core.block.Block;
@@ -28,9 +27,11 @@ import net.minecraft.core.world.World;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sunsetsatellite.computers.packets.PacketComputers;
-import turniplabs.halplibe.helper.*;
+import turniplabs.halplibe.helper.BlockBuilder;
+import turniplabs.halplibe.helper.EntityHelper;
+import turniplabs.halplibe.helper.ItemBuilder;
+import turniplabs.halplibe.helper.RecipeBuilder;
 import turniplabs.halplibe.util.ClientStartEntrypoint;
-import turniplabs.halplibe.util.GameStartEntrypoint;
 import turniplabs.halplibe.util.RecipeEntrypoint;
 import turniplabs.halplibe.util.TomlConfigHandler;
 import turniplabs.halplibe.util.toml.Toml;
@@ -40,8 +41,8 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.file.*;
 import java.nio.file.FileSystem;
+import java.nio.file.*;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -51,7 +52,7 @@ public class Computers implements ModInitializer, RecipeEntrypoint, ClientStartE
 	public static final String MOD_ID = "computers";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 	public static final TomlConfigHandler config;
-	private static int availableBlockId = 1300;
+	private static int availableBlockId = 1870;
 	private static int availableItemId = 17300;
 
 	public static RecipeNamespace COMPUTERS;
@@ -292,7 +293,7 @@ public class Computers implements ModInitializer, RecipeEntrypoint, ClientStartE
 		}
 
 		try {
-			TextureRegistry.initializeAllFiles(MOD_ID, stitcher);
+			TextureRegistry.initializeAllFiles(MOD_ID, stitcher, true);
 		} catch (URISyntaxException | IOException e) {
 			throw new RuntimeException("Failed to load textures.", e);
 		}

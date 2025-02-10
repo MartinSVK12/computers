@@ -26,9 +26,9 @@ import java.util.Iterator;
 import java.util.List;
 
 public class Computer {
-	private TileEntityComputer m_owner;
+	private final TileEntityComputer m_owner;
 	private int m_id;
-	private Terminal m_terminal;
+	private final Terminal m_terminal;
 	private FileSystem m_fileSystem;
 	private boolean m_on;
 	private boolean m_onDesired;
@@ -36,20 +36,20 @@ public class Computer {
 	private boolean m_stopped;
 	private boolean m_aborted;
 	private boolean m_blinking;
-	private ArrayList<Timer> m_timers;
-	private ArrayList<Alarm> m_alarms;
-	private ArrayList<HTTPRequest> m_httpRequests;
+	private final ArrayList<Timer> m_timers;
+	private final ArrayList<Alarm> m_alarms;
+	private final ArrayList<HTTPRequest> m_httpRequests;
 	private LuaValue m_mainFunction;
 	private LuaValue m_globals;
-	private boolean[] m_output;
-	private int[] m_bundledOutput;
+	private final boolean[] m_output;
+	private final int[] m_bundledOutput;
 	private boolean m_outputChanged;
-	private boolean[] m_input;
+	private final boolean[] m_input;
 	private boolean[] m_pendingInput;
-	private int[] m_bundledInput;
+	private final int[] m_bundledInput;
 	private int[] m_pendingBundledInput;
 	private boolean m_inputChanged;
-	private DriveInfo[] m_drives;
+	private final DriveInfo[] m_drives;
 	private int m_queuedDisc;
 	private int m_playingDisc;
 	private boolean m_restartDisc;
@@ -392,7 +392,6 @@ public class Computer {
 							this.m_outputChanged = true;
 							this.m_blinking = blinking;
 // ** MonitorExit[var5_7] (shouldn't be in output)
-							return;
 						}
 					}
 				}
@@ -474,7 +473,6 @@ public class Computer {
 				this.m_outputChanged = true;
 			}// ** MonitorExit[var3_3] (shouldn't be in output)
 
-			return;
 		}
 	}
 
@@ -504,7 +502,6 @@ public class Computer {
 				this.m_outputChanged = true;
 			}// ** MonitorExit[var3_3] (shouldn't be in output)
 
-			return;
 		}
 	}
 
@@ -530,7 +527,6 @@ public class Computer {
 				this.m_inputChanged = true;
 			}// ** MonitorExit[var3_3] (shouldn't be in output)
 
-			return;
 		}
 	}
 
@@ -556,7 +552,6 @@ public class Computer {
 				this.m_inputChanged = true;
 			}// ** MonitorExit[var3_3] (shouldn't be in output)
 
-			return;
 		}
 	}
 
@@ -614,7 +609,6 @@ public class Computer {
 				}
 			}// ** MonitorExit[var5_5] (shouldn't be in output)
 
-			return;
 		}
 	}
 
@@ -649,7 +643,7 @@ public class Computer {
 			globals.set("luajava", LuaValue.NIL);
 		}
 		LuaTable term = new LuaTable();
-		term.set("write", (LuaValue) new OneArgFunction() {
+		term.set("write", new OneArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -670,7 +664,7 @@ public class Computer {
 				}
 			}
 		);
-		term.set("scroll", (LuaValue) new OneArgFunction() {
+		term.set("scroll", new OneArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -687,7 +681,7 @@ public class Computer {
 				}
 			}
 		);
-		term.set("setCursorPos", (LuaValue) new TwoArgFunction() {
+		term.set("setCursorPos", new TwoArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -705,7 +699,7 @@ public class Computer {
 				}
 			}
 		);
-		term.set("setCursorBlink", (LuaValue) new OneArgFunction() {
+		term.set("setCursorBlink", new OneArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -722,7 +716,7 @@ public class Computer {
 				}
 			}
 		);
-		term.set("getCursorPos", (LuaValue) new VarArgFunction() {
+		term.set("getCursorPos", new VarArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -741,7 +735,7 @@ public class Computer {
 				}
 			}
 		);
-		term.set("getSize", (LuaValue) new VarArgFunction() {
+		term.set("getSize", new VarArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -760,7 +754,7 @@ public class Computer {
 				}
 			}
 		);
-		term.set("clear", (LuaValue) new ZeroArgFunction() {
+		term.set("clear", new ZeroArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -776,7 +770,7 @@ public class Computer {
 				}
 			}
 		);
-		term.set("clearLine", (LuaValue) new ZeroArgFunction() {
+		term.set("clearLine", new ZeroArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -792,22 +786,22 @@ public class Computer {
 				}
 			}
 		);
-		globals.set("term", (LuaValue) term);
+		globals.set("term", term);
 		LuaTable redstone = new LuaTable();
-		redstone.set("getSides", (LuaValue) new ZeroArgFunction() {
+		redstone.set("getSides", new ZeroArgFunction() {
 
 				@Override
 				public LuaValue call() {
 					Computer.this.tryAbort();
 					LuaTable results = new LuaTable();
 					for (int i = 0; i < 6; ++i) {
-						((LuaValue) results).set(i + 1, (LuaValue) LuaValue.valueOf(sides[i]));
+						results.set(i + 1, LuaValue.valueOf(sides[i]));
 					}
 					return results;
 				}
 			}
 		);
-		redstone.set("setOutput", (LuaValue) new TwoArgFunction() {
+		redstone.set("setOutput", new TwoArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _port, LuaValue _onOff) {
@@ -818,7 +812,7 @@ public class Computer {
 				}
 			}
 		);
-		redstone.set("getInput", (LuaValue) new OneArgFunction() {
+		redstone.set("getInput", new OneArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _port) {
@@ -828,7 +822,7 @@ public class Computer {
 				}
 			}
 		);
-		redstone.set("setBundledOutput", (LuaValue) new TwoArgFunction() {
+		redstone.set("setBundledOutput", new TwoArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _port, LuaValue _combination) {
@@ -839,7 +833,7 @@ public class Computer {
 				}
 			}
 		);
-		redstone.set("getBundledOutput", (LuaValue) new OneArgFunction() {
+		redstone.set("getBundledOutput", new OneArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _port) {
@@ -849,7 +843,7 @@ public class Computer {
 				}
 			}
 		);
-		redstone.set("getBundledInput", (LuaValue) new OneArgFunction() {
+		redstone.set("getBundledInput", new OneArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _port) {
@@ -859,7 +853,7 @@ public class Computer {
 				}
 			}
 		);
-		redstone.set("testBundledInput", (LuaValue) new TwoArgFunction() {
+		redstone.set("testBundledInput", new TwoArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _port, LuaValue _combination) {
@@ -871,10 +865,10 @@ public class Computer {
 				}
 			}
 		);
-		globals.set("redstone", (LuaValue) redstone);
-		globals.set("rs", (LuaValue) redstone);
+		globals.set("redstone", redstone);
+		globals.set("rs", redstone);
 		LuaTable fs = new LuaTable();
-		fs.set("list", (LuaValue) new OneArgFunction() {
+		fs.set("list", new OneArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _path) {
@@ -884,7 +878,7 @@ public class Computer {
 						String[] results = Computer.this.m_fileSystem.list(path);
 						LuaTable table = new LuaTable();
 						for (int i = 0; i < results.length; ++i) {
-							((LuaValue) table).set(i + 1, (LuaValue) LuaValue.valueOf(results[i]));
+							table.set(i + 1, LuaValue.valueOf(results[i]));
 						}
 						return table;
 					} catch (FileSystemException e) {
@@ -893,7 +887,7 @@ public class Computer {
 				}
 			}
 		);
-		fs.set("combine", (LuaValue) new TwoArgFunction() {
+		fs.set("combine", new TwoArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _pathA, LuaValue _pathB) {
@@ -904,7 +898,7 @@ public class Computer {
 				}
 			}
 		);
-		fs.set("getName", (LuaValue) new OneArgFunction() {
+		fs.set("getName", new OneArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _path) {
@@ -914,7 +908,7 @@ public class Computer {
 				}
 			}
 		);
-		fs.set("exists", (LuaValue) new OneArgFunction() {
+		fs.set("exists", new OneArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _path) {
@@ -928,7 +922,7 @@ public class Computer {
 				}
 			}
 		);
-		fs.set("isDir", (LuaValue) new OneArgFunction() {
+		fs.set("isDir", new OneArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _path) {
@@ -942,7 +936,7 @@ public class Computer {
 				}
 			}
 		);
-		fs.set("isReadOnly", (LuaValue) new OneArgFunction() {
+		fs.set("isReadOnly", new OneArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _path) {
@@ -956,7 +950,7 @@ public class Computer {
 				}
 			}
 		);
-		fs.set("makeDir", (LuaValue) new OneArgFunction() {
+		fs.set("makeDir", new OneArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _path) {
@@ -971,7 +965,7 @@ public class Computer {
 				}
 			}
 		);
-		fs.set("move", (LuaValue) new TwoArgFunction() {
+		fs.set("move", new TwoArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _path, LuaValue _dest) {
@@ -987,7 +981,7 @@ public class Computer {
 				}
 			}
 		);
-		fs.set("copy", (LuaValue) new TwoArgFunction() {
+		fs.set("copy", new TwoArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _path, LuaValue _dest) {
@@ -1003,7 +997,7 @@ public class Computer {
 				}
 			}
 		);
-		fs.set("delete", (LuaValue) new OneArgFunction() {
+		fs.set("delete", new OneArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _path) {
@@ -1018,7 +1012,7 @@ public class Computer {
 				}
 			}
 		);
-		fs.set("open", (LuaValue) new TwoArgFunction() {
+		fs.set("open", new TwoArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _path, LuaValue _mode) {
@@ -1057,7 +1051,7 @@ public class Computer {
 				}
 			}
 		);
-		fs.set("getDrive", (LuaValue) new OneArgFunction() {
+		fs.set("getDrive", new OneArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -1089,9 +1083,9 @@ public class Computer {
 				}
 			}
 		);
-		globals.set("fs", (LuaValue) fs);
+		globals.set("fs", fs);
 		LuaTable disk = new LuaTable();
-		disk.set("isPresent", (LuaValue) new OneArgFunction() {
+		disk.set("isPresent", new OneArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -1111,7 +1105,7 @@ public class Computer {
 				}
 			}
 		);
-		disk.set("getLabel", (LuaValue) new OneArgFunction() {
+		disk.set("getLabel", new OneArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -1138,7 +1132,7 @@ public class Computer {
 				}
 			}
 		);
-		disk.set("setLabel", (LuaValue) new TwoArgFunction() {
+		disk.set("setLabel", new TwoArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -1163,7 +1157,7 @@ public class Computer {
 				}
 			}
 		);
-		disk.set("hasData", (LuaValue) new OneArgFunction() {
+		disk.set("hasData", new OneArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -1183,7 +1177,7 @@ public class Computer {
 				}
 			}
 		);
-		disk.set("getMountPath", (LuaValue) new OneArgFunction() {
+		disk.set("getMountPath", new OneArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -1203,7 +1197,7 @@ public class Computer {
 				}
 			}
 		);
-		disk.set("hasAudio", (LuaValue) new OneArgFunction() {
+		disk.set("hasAudio", new OneArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -1223,7 +1217,7 @@ public class Computer {
 				}
 			}
 		);
-		disk.set("getAudioTitle", (LuaValue) new OneArgFunction() {
+		disk.set("getAudioTitle", new OneArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -1243,7 +1237,7 @@ public class Computer {
 				}
 			}
 		);
-		disk.set("playAudio", (LuaValue) new OneArgFunction() {
+		disk.set("playAudio", new OneArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -1266,7 +1260,7 @@ public class Computer {
 				}
 			}
 		);
-		disk.set("stopAudio", (LuaValue) new ZeroArgFunction() {
+		disk.set("stopAudio", new ZeroArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -1282,7 +1276,7 @@ public class Computer {
 				}
 			}
 		);
-		disk.set("eject", (LuaValue) new OneArgFunction() {
+		disk.set("eject", new OneArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -1300,9 +1294,9 @@ public class Computer {
 				}
 			}
 		);
-		globals.set("disk", (LuaValue) disk);
+		globals.set("disk", disk);
 		LuaTable os = new LuaTable();
-		os.set("queueEvent", (LuaValue) new VarArgFunction() {
+		os.set("queueEvent", new VarArgFunction() {
 
 				@Override
 				public Varargs invoke(Varargs _args) {
@@ -1321,11 +1315,11 @@ public class Computer {
 													}
 												}
 					);
-					return LuaValue.varargsOf(new LuaValue[0]);
+					return LuaValue.varargsOf(LuaValue.NOVALS);
 				}
 			}
 		);
-		os.set("startTimer", (LuaValue) new OneArgFunction() {
+		os.set("startTimer", new OneArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -1343,7 +1337,7 @@ public class Computer {
 				}
 			}
 		);
-		os.set("setAlarm", (LuaValue) new OneArgFunction() {
+		os.set("setAlarm", new OneArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -1364,7 +1358,7 @@ public class Computer {
 				}
 			}
 		);
-		os.set("shutdown", (LuaValue) new ZeroArgFunction() {
+		os.set("shutdown", new ZeroArgFunction() {
 
 				@Override
 				public LuaValue call() {
@@ -1374,7 +1368,7 @@ public class Computer {
 				}
 			}
 		);
-		os.set("reboot", (LuaValue) new ZeroArgFunction() {
+		os.set("reboot", new ZeroArgFunction() {
 
 				@Override
 				public LuaValue call() {
@@ -1392,9 +1386,9 @@ public class Computer {
 				return LuaValue.valueOf(Computer.this.m_id);
 			}
 		};
-		os.set("computerID", (LuaValue) computerID);
-		os.set("getComputerID", (LuaValue) computerID);
-		os.set("clock", (LuaValue) new ZeroArgFunction() {
+		os.set("computerID", computerID);
+		os.set("getComputerID", computerID);
+		os.set("clock", new ZeroArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -1409,7 +1403,7 @@ public class Computer {
 				}
 			}
 		);
-		os.set("time", (LuaValue) new ZeroArgFunction() {
+		os.set("time", new ZeroArgFunction() {
 
 				/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -1424,10 +1418,10 @@ public class Computer {
 				}
 			}
 		);
-		globals.set("os", (LuaValue) os);
+		globals.set("os", os);
 		if (Computers.enableAPI_http > 0) {
 			LuaTable http = new LuaTable();
-			http.set("request", (LuaValue) new OneArgFunction() {
+			http.set("request", new OneArgFunction() {
 
 					/*
 	// WARNING - Removed try catching itself - possible behaviour change.
@@ -1449,7 +1443,7 @@ public class Computer {
 					}
 				}
 			);
-			globals.set("http", (LuaValue) http);
+			globals.set("http", http);
 		}
 		try {
 			File bios = new File(getBiosFolder(), "bios.lua");
@@ -1654,11 +1648,10 @@ public class Computer {
 
 								   @Override
 								   public LuaValue[] getArguments() {
-									   return new LuaValue[0];
+									   return LuaValue.NOVALS;
 								   }
 							   }
 			);
-			return;
 		}
 	}
 
@@ -1717,8 +1710,8 @@ public class Computer {
 											 synchronized (object) {
 												 for (i = 0;
 													  i < 6; ++i) {
-													 ((Computer) Computer.this).m_output[i] = false;
-													 ((Computer) Computer.this).m_bundledOutput[i] = 0;
+													 Computer.this.m_output[i] = false;
+													 Computer.this.m_bundledOutput[i] = 0;
 												 }
 												 Computer.this.m_outputChanged = true;
 											 }
@@ -1727,7 +1720,7 @@ public class Computer {
 												 Computer.this.m_queuedDisc = -1;
 												 for (i = 0;
 													  i < 6; ++i) {
-													 ((Computer) Computer.this).m_drives[i].mountPath = null;
+													 Computer.this.m_drives[i].mountPath = null;
 												 }
 											 }
 											 object = this;
@@ -1878,7 +1871,6 @@ public class Computer {
 													 }
 												 }
 											 }
-											 return;
 										 }
 									 }
 								 }, this
@@ -1919,7 +1911,6 @@ public class Computer {
 											 synchronized (arrdriveInfo) {
 												 Computer.this.m_fileSystem.unmount(_path);
 											 }
-											 return;
 										 }
 									 }
 								 }, this
@@ -1936,7 +1927,7 @@ public class Computer {
 
 	private LuaValue wrapBufferedReader(final BufferedReader _reader) {
 		LuaTable result = new LuaTable();
-		result.set("readLine", (LuaValue) new ZeroArgFunction() {
+		result.set("readLine", new ZeroArgFunction() {
 
 				@Override
 				public LuaValue call() {
@@ -1953,13 +1944,13 @@ public class Computer {
 				}
 			}
 		);
-		result.set("readAll", (LuaValue) new ZeroArgFunction() {
+		result.set("readAll", new ZeroArgFunction() {
 
 				@Override
 				public LuaValue call() {
 					Computer.this.tryAbort();
 					try {
-						StringBuilder result = new StringBuilder("");
+						StringBuilder result = new StringBuilder();
 						String line = _reader.readLine();
 						while (line != null) {
 							result.append(line);
@@ -1974,7 +1965,7 @@ public class Computer {
 				}
 			}
 		);
-		result.set("close", (LuaValue) new ZeroArgFunction() {
+		result.set("close", new ZeroArgFunction() {
 
 				@Override
 				public LuaValue call() {
@@ -1993,7 +1984,7 @@ public class Computer {
 
 	private LuaValue wrapBufferedWriter(final BufferedWriter _writer) {
 		LuaTable result = new LuaTable();
-		result.set("write", (LuaValue) new OneArgFunction() {
+		result.set("write", new OneArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _arg) {
@@ -2011,7 +2002,7 @@ public class Computer {
 				}
 			}
 		);
-		result.set("writeLine", (LuaValue) new OneArgFunction() {
+		result.set("writeLine", new OneArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _arg) {
@@ -2030,7 +2021,7 @@ public class Computer {
 				}
 			}
 		);
-		result.set("close", (LuaValue) new ZeroArgFunction() {
+		result.set("close", new ZeroArgFunction() {
 
 				@Override
 				public LuaValue call() {
@@ -2049,7 +2040,7 @@ public class Computer {
 
 	private LuaValue wrapInputStream(final InputStream _reader) {
 		LuaTable result = new LuaTable();
-		result.set("read", (LuaValue) new ZeroArgFunction() {
+		result.set("read", new ZeroArgFunction() {
 
 				@Override
 				public LuaValue call() {
@@ -2066,7 +2057,7 @@ public class Computer {
 				}
 			}
 		);
-		result.set("close", (LuaValue) new ZeroArgFunction() {
+		result.set("close", new ZeroArgFunction() {
 
 				@Override
 				public LuaValue call() {
@@ -2085,7 +2076,7 @@ public class Computer {
 
 	private LuaValue wrapOutputStream(final OutputStream _writer) {
 		LuaTable result = new LuaTable();
-		result.set("write", (LuaValue) new OneArgFunction() {
+		result.set("write", new OneArgFunction() {
 
 				@Override
 				public LuaValue call(LuaValue _arg) {
@@ -2100,7 +2091,7 @@ public class Computer {
 				}
 			}
 		);
-		result.set("close", (LuaValue) new ZeroArgFunction() {
+		result.set("close", new ZeroArgFunction() {
 
 				@Override
 				public LuaValue call() {
@@ -2170,7 +2161,7 @@ public class Computer {
 		}
 	}
 
-	private static interface Event {
-		public LuaValue[] getArguments();
+	private interface Event {
+		LuaValue[] getArguments();
 	}
 }

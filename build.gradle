@@ -1,5 +1,5 @@
 plugins {
-	id 'babric-loom' version '1.1.+'
+	id 'babric-loom' version '1.4.+'
 	id 'java'
 }
 
@@ -80,6 +80,10 @@ repositories {
 		}
 		metadataSources { artifact() }
 	}
+	maven {
+		name = 'Signalum Maven Releases'
+		url = 'https://maven.thesignalumproject.net/releases/'
+	}
 }
 
 dependencies {
@@ -95,7 +99,7 @@ dependencies {
 
 	modImplementation "ModMenu:ModMenu:2.0.6"
 
-	modImplementation "catalyst:catalyst-core:1.4.4"
+	modImplementation "sunsetsatellite:catalyst-core:1.10.0"
 
 	implementation "org.slf4j:slf4j-api:1.8.0-beta4"
 	implementation "org.apache.logging.log4j:log4j-slf4j18-impl:2.16.0"
@@ -109,6 +113,12 @@ dependencies {
 	implementation("org.apache.logging.log4j:log4j-core:${log4jVersion}")
 	implementation("org.apache.logging.log4j:log4j-api:${log4jVersion}")
 	implementation("org.apache.logging.log4j:log4j-1.2-api:${log4jVersion}")
+
+	modImplementation("net.fabricmc:fabric-language-kotlin:${project.flk_version}+kotlin.${project.kotlin_version}") {
+		exclude(group: "net.fabricmc", module: "fabric-loader")
+	}
+
+	include(implementation(project(":vm")))
 }
 
 java {
@@ -117,7 +127,7 @@ java {
 	withSourcesJar()
 }
 
-tasks.withType(JavaCompile) {
+tasks.withType(JavaCompile).configureEach {
 	options.release.set 8
 }
 
